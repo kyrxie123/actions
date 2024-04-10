@@ -1,0 +1,28 @@
+name: ci
+
+on:
+  schedule:
+    - cron: "0 */3 * * *"
+  workflow_dispatch:
+
+jobs:
+  autogreen:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v2
+
+      - name: Random Decide
+        id: random
+        run: echo "commit=$(( $RANDOM % 2 ))" >> $GITHUB_ENV
+
+      - name: Conditional commit
+        if: env.commit == '1'
+        run: |
+          git config --local user.email "s1xu@outlook.sg"
+          git config --local user.name "zachasa"
+          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git pull --rebase
+          git commit --allow-empty -m "Make Program Every Day!"
+          git push
+
