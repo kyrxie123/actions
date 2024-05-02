@@ -2,7 +2,9 @@ name: ci
 
 on:
   schedule:
-    - cron: "0 */3 * * *"
+    - cron: "0 1 * * *"
+    - cron: "0 5 * * *"
+    - cron: "0 10 * * *"
   workflow_dispatch:
 
 jobs:
@@ -12,17 +14,16 @@ jobs:
       - name: Clone repository
         uses: actions/checkout@v2
 
-      - name: Random Decide
-        id: random
-        run: echo "commit=$(( $RANDOM % 2 ))" >> $GITHUB_ENV
+      - name: Random Decide for Submitting
+        id: random_decision
+        run: echo "should_commit=$(( $RANDOM % 2 ))" >> $GITHUB_ENV
 
       - name: Conditional commit
-        if: env.commit == '1'
+        if: env.should_commit == '1'
         run: |
-          git config --local user.email "broad.plugger0w@icloud.com"
-          git config --local user.name "kyrxie"
+          git config --local user.email "waiver-snitch.04@icloud.com"
+          git config --local user.name "kryxie222"
           git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git pull --rebase
           git commit --allow-empty -m "Make Program Every Day!"
           git push
-
